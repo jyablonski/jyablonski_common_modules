@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "jyablonski_common_modules"
+version = "0.0.1"
+description = ""
+authors = ["jyablonski9 <jyablonski9@gmail.com>"]
+maintainers = ["jyablonski9 <jyablonski9@gmail.com>"]
+classifiers = [
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+exclude = ["docker/"]
+
+[tool.poetry.dependencies]
+python = "^3.9 || ^3.10"
+pandas = "^2.0.3"
+SQLAlchemy = "^1.4.48"
+psycopg2-binary = "^2.9.6"
+boto3 = "^1.26.165"
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "*"
+moto = "*"
+black = "*"
+ipykernel = "^6.23.3"
+
+[tool.poetry.extras]
+es-logging = ["opensearch-logger"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
