@@ -28,5 +28,5 @@ bump-major:
 test:
 	@make start-postgres
 	@sleep 1
-	@pytest -v
+	@poetry run pytest -v
 	@make stop-postgres
