@@ -25,6 +25,8 @@ pytest = "*"
 moto = "*"
 black = "*"
 ipykernel = "^6.23.3"
+pytest-cov = "^4.1.0"
+coveralls = "^3.3.1"
 
 [tool.poetry.extras]
 es-logging = ["opensearch-logger"]

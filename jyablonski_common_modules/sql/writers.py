@@ -73,7 +73,7 @@ def write_to_sql_upsert(
     """
     sql_table_name = f"{table}"
     if len(df) == 0:
-        print(f"{sql_table_name} is empty, not storing to SQL")
+        print(f"{sql_table_name} is empty, not writing to SQL")
         pass
 
     else:
