@@ -2,6 +2,9 @@ name: Common Modules Test Pipeline
 on:
   pull_request:
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
