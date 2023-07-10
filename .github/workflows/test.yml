@@ -35,3 +35,7 @@ jobs:
       - name: Run tests
         run: |
           make test
+
+      - name: Run tests
+        run: |
+          poetry run coveralls
