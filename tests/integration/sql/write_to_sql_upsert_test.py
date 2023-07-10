@@ -24,6 +24,7 @@ def test_write_to_sql_upsert(postgres_conn, sales_data):
 
     assert count_check_results_after["count"][0] == 4
 
+
 def test_write_to_sql_upsert_new_table(postgres_conn, sales_data):
     table_name = "sales_data_new"
     count_check = f"SELECT count(*) FROM sales_source.{table_name}"
@@ -41,6 +42,7 @@ def test_write_to_sql_upsert_new_table(postgres_conn, sales_data):
     count_check_results_after = pd.read_sql_query(sql=count_check, con=postgres_conn)
 
     assert count_check_results_after["count"][0] == 2
+
 
 def test_write_to_sql_upsert_empty(postgres_conn, capfd):
     fake_df = pd.DataFrame()
@@ -60,7 +62,9 @@ def test_write_to_sql_upsert_empty(postgres_conn, capfd):
 
 
 def test_write_to_sql_upsert_fail(postgres_conn):
-    fake_df = pd.DataFrame(data={"id": [1, 2, 3], "my%col_is_screwedlol": ["team1", "team2", "team3"]})
+    fake_df = pd.DataFrame(
+        data={"id": [1, 2, 3], "my%col_is_screwedlol": ["team1", "team2", "team3"]}
+    )
     table_name = "fake_data_pct"
 
     # upsert 2 records

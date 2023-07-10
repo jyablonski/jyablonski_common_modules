@@ -10,3 +10,4 @@ dist/
 jacobs_notes.md
 *coverage*
 *coveralls*
+*.log

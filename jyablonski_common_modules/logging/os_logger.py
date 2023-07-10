@@ -3,7 +3,7 @@ import logging
 from opensearch_logger import OpenSearchHandler
 
 
-def create_logger(es_index: str, es_host_endpoint: str):
+def create_os_logger(index: str, host_endpoint: str):
     """
     Logger which writes to both STDOUT as well as an Opensearch Endpoint
 
@@ -11,7 +11,10 @@ def create_logger(es_index: str, es_host_endpoint: str):
         es_index (str): The name of the Opensearch Index that logs will go to.
             It will be automatically created if it doesn't already exist.
 
-        es_endpoint (str): The Endpoint of the Opensearch Cluster
+        host_endpoint (str): The Endpoint of the Opensearch Cluster
+
+    Returns:
+        Opensearch Logger
     """
     logging.basicConfig(
         level=logging.INFO,
@@ -19,8 +22,8 @@ def create_logger(es_index: str, es_host_endpoint: str):
         datefmt="%Y-%m-%d %I:%M:%S %p",
     )
     handler = OpenSearchHandler(
-        index_name=es_index,
-        hosts=[f"{es_host_endpoint}:443"],
+        index_name=index,
+        hosts=[f"{host_endpoint}:443"],
         # http_auth=("admin", "admin"),
         http_compress=True,
         use_ssl=False,

@@ -2,6 +2,7 @@ import botocore
 
 from .exceptions import S3PrefixCheckFail
 
+
 def check_s3_file_exists(client: botocore.client, bucket: str, file_prefix: str):
     """
     Function to check if a file exists in an S3 Bucket.

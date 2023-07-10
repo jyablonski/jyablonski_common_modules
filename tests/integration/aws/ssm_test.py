@@ -22,10 +22,11 @@ def test_get_ssm_parameter_success():
 
     assert parameter == parameter_value
 
+
 @mock_ssm
 def test_get_ssm_parameter_fail():
     client = boto3.client("ssm", region_name="us-east-1")
-    
+
     parameter_name = "jacobs_test_parameter"
     fake_parameter_name = "this doesn't exist hoe"
     parameter_value = "my super secret value"
