@@ -1,9 +1,6 @@
 import botocore
 
-try:
-    from .exceptions import S3PrefixCheckFail
-except:
-    from exceptions import S3PrefixCheckFail
+from .exceptions import S3PrefixCheckFail
 
 
 def check_s3_file_exists(client: botocore.client, bucket: str, file_prefix: str):

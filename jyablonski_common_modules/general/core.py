@@ -1,7 +1,6 @@
 def get_leading_zeroes(month: int) -> str:
     """
     Function to add leading zeroes to a month (1 (January) -> 01).
-    Used in the the `write_to_s3` function.
 
     Args:
         month (int): The month integer (created from `datetime.now().month`)

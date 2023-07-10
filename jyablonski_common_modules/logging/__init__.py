@@ -1,1 +1,2 @@
-from .logger import *
+from jyablonski_common_modules.logging.base_logger import create_logger
+from jyablonski_common_modules.logging.os_logger import create_os_logger

@@ -36,7 +36,8 @@ def write_to_sql(
             )
             print(f"Writing {len(df)} {table} rows to {table} to SQL")
     except BaseException as error:
-        print(f"SQL Write Script Failed, {error}")
+        print(f"SQL Write Script Failed while writing to {table}, {error}")
+        raise error
 
 
 def write_to_sql_upsert(
@@ -73,7 +74,7 @@ def write_to_sql_upsert(
     """
     sql_table_name = f"{table}"
     if len(df) == 0:
-        print(f"{sql_table_name} is empty, not storing to SQL")
+        print(f"{sql_table_name} is empty, not writing to SQL")
         pass
 
     else:
@@ -140,6 +141,6 @@ def write_to_sql_upsert(
             except BaseException as error:
                 conn.execute(f"DROP TABLE {temp_table_name};")
                 print(
-                    f"SQL Upsert Function Failed for EXISTING {table} ({len(df)} rows), {error}"
+                    f"SQL Upsert Function Failed for EXISTING TABLE {table} ({len(df)} rows), {error}"
                 )
                 pass

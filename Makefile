@@ -26,7 +26,8 @@ bump-major:
 
 .PHONY: test
 test:
+	@make stop-postgres
 	@make start-postgres
 	@sleep 1
-	@poetry run pytest -v
+	@poetry run pytest --cov-report term --cov-report xml:coverage.xml --cov=jyablonski_common_modules
 	@make stop-postgres

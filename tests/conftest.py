@@ -38,7 +38,7 @@ def postgres_conn():
 
 @pytest.fixture(scope="session")
 def sales_data():
-    """Fixture for SQL Upsert Test"""
+    """Fixture for Write to SQL Upsert Test"""
     data = {
         "id": [2, 4],
         "item": ["Sandals", "Belt"],
@@ -50,7 +50,7 @@ def sales_data():
 
 @pytest.fixture(scope="session")
 def shipping_data():
-    """Fixture for SQL Upsert Test"""
+    """Fixture for Write to SQL Test"""
     date = datetime.now().date()
 
     data = {
@@ -65,7 +65,6 @@ def shipping_data():
 
 @pytest.fixture(scope="session")
 def get_feature_flags_postgres(postgres_conn):
-    # test suite was shitting itself at the very beginning while trying to run this without a `time.sleep()`
     time.sleep(3)
     feature_flags = get_feature_flags(connection=postgres_conn, schema="sales_source")
 
