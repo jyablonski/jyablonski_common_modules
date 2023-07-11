@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jyablonski_common_modules"
-version = "0.0.2"
+version = "0.0.3"
 description = ""
 authors = ["jyablonski9 <jyablonski9@gmail.com>"]
 maintainers = ["jyablonski9 <jyablonski9@gmail.com>"]
