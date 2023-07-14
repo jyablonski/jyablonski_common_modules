@@ -29,10 +29,7 @@ def write_to_sql(
             print(f"{table} is empty, not writing to SQL")
         else:
             df.to_sql(
-                con=con,
-                name=f"{table}",
-                index=False,
-                if_exists=table_type,
+                con=con, name=f"{table}", index=False, if_exists=table_type,
             )
             print(f"Writing {len(df)} {table} rows to {table} to SQL")
     except BaseException as error:
@@ -85,8 +82,8 @@ def write_to_sql_upsert(
 
             if not conn.execute(
                 f"""SELECT EXISTS (
-                    SELECT FROM information_schema.tables 
-                    WHERE  table_schema = '{schema}' 
+                    SELECT FROM information_schema.tables
+                    WHERE  table_schema = '{schema}'
                     AND table_name = '{sql_table_name}');
                     """
             ).first()[0]:
@@ -127,9 +124,9 @@ def write_to_sql_upsert(
 
                 # Compose and execute upsert query
                 query_upsert = f"""
-                INSERT INTO "{sql_table_name}" ({headers_sql_txt}) 
+                INSERT INTO "{sql_table_name}" ({headers_sql_txt})
                 SELECT {headers_sql_txt} FROM "{temp_table_name}"
-                ON CONFLICT ({index_sql_txt}) DO UPDATE 
+                ON CONFLICT ({index_sql_txt}) DO UPDATE
                 SET {update_column_stmt};
                 """
                 conn.execute(query_upsert)

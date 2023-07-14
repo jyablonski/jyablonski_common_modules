@@ -3,11 +3,7 @@ from sqlalchemy.engine.base import Engine
 
 
 def sql_connection(
-    database: str,
-    schema: str,
-    user: str,
-    pw: str,
-    host: str,
+    database: str, schema: str, user: str, pw: str, host: str,
 ) -> Engine:
     """
     SQL Engine function to define the SQL Driver + connection variables needed to connect to the DB.
@@ -31,9 +27,7 @@ def sql_connection(
         f"postgresql+psycopg2://{user}:{pw}@{host}:5432/{database}",
         # pool_size=0,
         # max_overflow=20,
-        connect_args={
-            "options": f"-csearch_path={schema}",
-        },
+        connect_args={"options": f"-csearch_path={schema}",},
         # defining schema to connect to
         echo=False,
     )
