@@ -14,7 +14,6 @@ def test_write_to_sql_upsert(postgres_conn, sales_data):
         schema="sales_source",
         table="sales_data",
         df=sales_data,
-        table_type="upsert",
         pd_index=["id"],
     )
 
@@ -35,7 +34,6 @@ def test_write_to_sql_upsert_new_table(postgres_conn, sales_data):
         schema="sales_source",
         table=table_name,
         df=sales_data,
-        table_type="upsert",
         pd_index=["id"],
     )
 
@@ -53,7 +51,6 @@ def test_write_to_sql_upsert_empty(postgres_conn, capfd):
         schema="sales_source",
         table=table_name,
         df=fake_df,
-        table_type="upsert",
         pd_index=["id"],
     )
 
@@ -73,7 +70,6 @@ def test_write_to_sql_upsert_fail(postgres_conn):
         schema="sales_source",
         table=table_name,
         df=fake_df,
-        table_type="upsert",
         pd_index=["id"],
     )
 

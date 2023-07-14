@@ -42,7 +42,6 @@ def write_to_sql_upsert(
     table: str,
     schema: str,
     df: pd.DataFrame,
-    table_type: str,
     pd_index: List[str],
 ) -> None:
     """
@@ -60,8 +59,6 @@ def write_to_sql_upsert(
         schema (str): The Name of the SQL Schema the table is in
 
         df (DataFrame): The Pandas DataFrame to store in SQL
-
-        table_type (str): A placeholder which should always be "upsert"
 
         pd_index (List[str]): The columns that make up the composite primary key of the SQL Table.
 
