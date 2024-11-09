@@ -9,9 +9,7 @@ def test_create_logger():
     with open(log_file_location, "w") as fp:
         fp.write(f"1")
 
-    logger = create_logger(
-        log_file=log_file_location,
-    )
+    logger = create_logger(log_file=log_file_location,)
     logger.info(f"hi")
 
     dir_list = os.listdir()

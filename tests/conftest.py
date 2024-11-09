@@ -1,4 +1,5 @@
 from datetime import datetime
+import logging
 import os
 import time
 
@@ -6,7 +7,7 @@ import pandas as pd
 import pytest
 
 from jyablonski_common_modules.general import get_feature_flags
-from jyablonski_common_modules.sql import sql_connection
+from jyablonski_common_modules.sql import create_sql_engine
 
 
 @pytest.fixture(scope="function")
@@ -24,17 +25,22 @@ def aws_credentials():
 @pytest.fixture(scope="session")
 def postgres_conn():
     """Fixture to connect to Docker Postgres Container"""
-    conn = sql_connection(
+    conn = create_sql_engine(
         database="postgres",
         schema="sales_source",
         user="postgres",
-        pw="postgres",
-        host="localhost",
+        password="postgres",
+        host="postgres",
     )
 
     connection = conn.connect()
     yield connection
 
+# i think this is needed to initialize the logging statements & test they're working as intended
+@pytest.fixture(scope="session", autouse=True)
+def configure_logging():
+    logging.basicConfig(level=logging.INFO)
+    yield
 
 @pytest.fixture(scope="session")
 def sales_data():

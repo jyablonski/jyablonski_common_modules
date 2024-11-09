@@ -1,41 +1,66 @@
-from sqlalchemy import create_engine
+import logging
+import os
+
+from sqlalchemy import exc, create_engine
 from sqlalchemy.engine.base import Engine
 
+logger = logging.getLogger(__name__)
 
-def sql_connection(
-    database: str,
+def create_sql_engine(
     schema: str,
-    user: str,
-    pw: str,
-    host: str,
+    user: str = os.environ.get("RDS_USER", "postgres"),
+    password: str = os.environ.get("RDS_PW", "postgres"),
+    host: str = os.environ.get("IP", "postgres"),
+    database: str = os.environ.get("RDS_DB", "postgres"),
+    port: int = os.environ.get("RDS_PORT", 5432),
 ) -> Engine:
     """
-    SQL Engine function to define the SQL Driver + connection variables needed to connect to the DB.
-    This doesn't actually make the connection, use conn.connect() in a context manager to create 1 re-usable connection
+    SQLAlchemy function to define the SQL Driver + connection
+    variables needed to connect to the DB.
+
+    This doesn't actually make the connection, use engine.connect()
+    or engine.begin() in a context manager to create 1 re-usable connection
 
     Args:
-        database(str): The Database to connect to
+        schema (str): The Schema in the DB to connect to.
 
-        schema (str): The Schema to connect to
+        user (str): The User to connect to the DB with.
 
-        user (str): The User for the connection
+        password (str): The Password to connect to the DB with.
 
-        pw (str): The Password for the connection
+        host (str): The Hostname of the DB.
 
-        host (str): The Host Endpoint of the Database
+        database (str): The Database to connect to.
+
+        port (int): The Port to connect to the DB with.
 
     Returns:
-        SQL Engine variable to a specified schema in my PostgreSQL DB
+        SQL Engine to a specified schema in my PostgreSQL DB
+
+    Example:
+        To use this function, do the following:
+
+        ```python
+
+        engine = create_sql_engine("my_schema")
+        with engine.begin() as conn:
+            result = conn.execute("SELECT * FROM my_table")
+            for row in result:
+                print(row)
+        ```
+
     """
-    connection = create_engine(
-        f"postgresql+psycopg2://{user}:{pw}@{host}:5432/{database}",
-        # pool_size=0,
-        # max_overflow=20,
-        connect_args={
-            "options": f"-csearch_path={schema}",
-        },
-        # defining schema to connect to
-        echo=False,
-    )
-    print(f"SQL Engine for schema: {schema} Successful")
-    return connection
+    db_url = f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{database}"
+    try:
+        engine = create_engine(
+            url=db_url,
+            connect_args={
+                "options": f"-csearch_path={schema}",
+            },
+            echo=False,
+        )
+        logger.info(f"SQL Engine for {db_url} created")
+        return engine
+    except exc.SQLAlchemyError as e:
+        logger.error(f"SQL Engine for {db_url} failed, {e}")
+        raise e
