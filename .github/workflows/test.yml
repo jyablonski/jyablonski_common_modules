@@ -16,6 +16,8 @@ jobs:
         run: |
           make test
 
-      - name: Run Coveralls in Docker
-        run: |
-          docker compose -f docker/docker-compose-test.yml exec common_modules_test_runner poetry run coveralls
+      # tried doing this in the same container but it's a pain
+      # should just install poetry and run coveralls that way
+      # - name: Run Coveralls in Docker
+      #   run: |
+      #     docker compose -f docker/docker-compose-test.yml exec common_modules_test_runner poetry run coveralls
