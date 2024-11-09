@@ -3,12 +3,15 @@
 
 Version: 0.0.3
 
-Small Repo used to maintain helper functions across my projects.
+Small Repo used to maintain shared helper functions across my projects.
 
 - PostgreSQL Connections + Upsert Functions
 - General Python Functions
 - Standard Logging & optional Opensearch Logging Functions
 - AWS Helper Functions
+
+## Testing
+To run tests, run `make test`
 
 ## Install
 
