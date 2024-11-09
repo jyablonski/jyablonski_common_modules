@@ -28,9 +28,9 @@ services:
       - postgres:postgres
     volumes:
       - ${PWD}/pyproject.toml/:/home/appuser/pyproject.toml
-      - ${PWD}/src/:/home/appuser/src
+      - ${PWD}/jyablonski_common_modules/:/home/appuser/jyablonski_common_modules
       - ${PWD}/tests/:/home/appuser/tests
-    command: python3 -m pytest -vv --cov-report term --cov-report xml:coverage.xml --cov=src --color=yes
+    command: python3 -m pytest -vv --cov-report term --cov-report xml:coverage.xml --cov=jyablonski_common_modules --color=yes
 
 networks:
   test_network:
