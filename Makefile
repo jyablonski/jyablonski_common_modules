@@ -24,10 +24,11 @@ bump-major:
 	@git push --tags
 	@git push
 
+.PHONY: build-test
+build-test:
+	@docker compose -f docker/docker-compose-test.yml build
+
 .PHONY: test
 test:
-	@make stop-postgres
-	@make start-postgres
-	@sleep 1
-	@poetry run pytest --cov-report term --cov-report xml:coverage.xml --cov=jyablonski_common_modules
-	@make stop-postgres
+	@docker compose -f docker/docker-compose-test.yml down
+	@docker compose -f docker/docker-compose-test.yml up --exit-code-from common_modules_test_runner

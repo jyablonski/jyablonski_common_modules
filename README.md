@@ -7,5 +7,16 @@ Small Repo used to maintain helper functions across my projects.
 
 - PostgreSQL Connections + Upsert Functions
 - General Python Functions
-- Standard Logging & Opensearch Logging Options
+- Standard Logging & optional Opensearch Logging Functions
 - AWS Helper Functions
+
+## Install
+
+#### Local
+`poetry install --extras "es-logging"`
+`poetry install --extras "all"
+
+#### PyPi
+`pip install jyablonski_common_modules`
+`pip install jyablonski_common_modules[es-logging]`
+`pip install jyablonski_common_modules[all]`

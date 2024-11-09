@@ -1,11 +1,11 @@
 import boto3
-from moto import mock_ssm
+from moto import mock_aws
 import pytest
 
 from jyablonski_common_modules.aws import get_ssm_parameter
 
 
-@mock_ssm
+@mock_aws
 def test_get_ssm_parameter_success():
     client = boto3.client("ssm", region_name="us-east-1")
     parameter_name = "jacobs_test_parameter"
@@ -23,7 +23,7 @@ def test_get_ssm_parameter_success():
     assert parameter == parameter_value
 
 
-@mock_ssm
+@mock_aws
 def test_get_ssm_parameter_fail():
     client = boto3.client("ssm", region_name="us-east-1")
 

@@ -12,6 +12,3 @@ def create_logger(log_file: str, date_format: str = "%Y-%m-%d %I:%M:%S %p"):
     logger.setLevel(logging.INFO)
 
     return logger
-
-
-# logger = create_logger("logs/example.log")

@@ -1,11 +1,11 @@
 import boto3
-from moto import mock_secretsmanager
+from moto import mock_aws
 import pytest
 
 from jyablonski_common_modules.aws import get_secret_value
 
 
-@mock_secretsmanager
+@mock_aws
 def test_get_secret_value_success():
     client = boto3.client("secretsmanager", region_name="us-east-1")
     secret_name = "bababooyee"
@@ -18,7 +18,7 @@ def test_get_secret_value_success():
     assert result == secret_value
 
 
-@mock_secretsmanager
+@mock_aws
 def test_get_secret_value_fail():
     client = boto3.client("secretsmanager", region_name="us-east-1")
 
