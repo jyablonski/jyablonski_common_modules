@@ -15,11 +15,11 @@ def create_sql_engine(
     port: int = os.environ.get("RDS_PORT", 5432),
 ) -> Engine:
     """
-    SQL Connection function to define the SQL Driver + connection
+    SQLAlchemy function to define the SQL Driver + connection
     variables needed to connect to the DB.
 
-    This doesn't actually make the connection, use conn.connect()
-    in a context manager to create 1 re-usable connection
+    This doesn't actually make the connection, use engine.connect()
+    or engine.begin() in a context manager to create 1 re-usable connection
 
     Args:
         schema (str): The Schema in the DB to connect to.
@@ -35,7 +35,7 @@ def create_sql_engine(
         port (int): The Port to connect to the DB with.
 
     Returns:
-        SQL Connection variable to a specified schema in my PostgreSQL DB
+        SQL Engine to a specified schema in my PostgreSQL DB
 
     Example:
         To use this function, do the following:

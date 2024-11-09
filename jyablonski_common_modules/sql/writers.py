@@ -51,7 +51,7 @@ def write_to_sql_upsert(
         return
     
     if not all(key in df.columns for key in primary_keys):
-        return ValueError("Not all Primary Key Columns are in the DataFrame")
+        raise ValueError("Not all Primary Key Columns are in the DataFrame")
 
     try:
         # Check if the table exists
