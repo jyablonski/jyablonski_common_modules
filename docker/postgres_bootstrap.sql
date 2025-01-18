@@ -9,13 +9,25 @@ CREATE TABLE IF NOT EXISTS sales_source.sales_data
     id serial primary key,
     item text,
     price double precision,
-    CONSTRAINT unique_constraint_for_upsert_boxscores UNIQUE (id)
+    CONSTRAINT unique_constraint_for_upsert_sales UNIQUE (id)
 );
 
 INSERT INTO sales_source.sales_data(item, price)
 VALUES ('Shoes', 30),
        ('Sandals', 25),
        ('Hat', 5);
+
+DROP TABLE IF EXISTS sales_source.update_ts_data;
+CREATE TABLE IF NOT EXISTS sales_source.update_ts_data
+(
+    id serial primary key,
+    item text,
+    price double precision,
+	created_at timestamp without time zone default now(),
+	modified_at timestamp without time zone default now(),
+    CONSTRAINT unique_constraint_for_upsert_update_ts UNIQUE (id)
+);
+
 
 DROP TABLE IF EXISTS sales_source.feature_flags;
 CREATE TABLE IF NOT EXISTS sales_source.feature_flags

@@ -9,9 +9,12 @@ COPY docker/install_packages.sh .
 COPY pyproject.toml .
 COPY poetry.lock .
 
+# needed bc the readme parameter is set
+COPY README.md . 
+
 RUN ./install_packages.sh && \
     pip install poetry && \
-    poetry install --with test
+    poetry install --with test --no-root
 
 FROM base AS runtime
 

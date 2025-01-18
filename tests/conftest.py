@@ -34,6 +34,7 @@ def postgres_conn():
     )
 
     connection = conn.connect()
+    connection.execution_options(isolation_level="AUTOCOMMIT")
     yield connection
 
 # i think this is needed to initialize the logging statements & test they're working as intended
