@@ -26,9 +26,11 @@ def test_write_to_sql_upsert(postgres_conn, sales_data):
 
     assert count_check_results_after["count"][0] == 4
 
+
 def test_write_to_sql_upsert_update_existing(postgres_conn, sales_data):
-    sales_data.loc[sales_data["id"] == 2, "item"] = "Updated Sandals"
-    
+    updated_item = "Updated Sandals"
+    sales_data.loc[sales_data["id"] == 2, "item"] = updated_item
+
     write_to_sql_upsert(
         conn=postgres_conn,
         schema="sales_source",
@@ -42,16 +44,19 @@ def test_write_to_sql_upsert_update_existing(postgres_conn, sales_data):
         con=postgres_conn,
     )
 
-    assert updated_record["item"][0] == "Updated Sandals"
+    assert updated_record["item"][0] == updated_item
+
 
 def test_write_to_sql_upsert_composite_key(postgres_conn):
-    composite_data = pd.DataFrame({
-        "id": [1, 2],
-        "item": ["Item1", "Item2"],
-        "location": ["Warehouse1", "Warehouse2"],
-        "price": [100, 200]
-    })
-    
+    composite_data = pd.DataFrame(
+        {
+            "id": [1, 2],
+            "item": ["Item1", "Item2"],
+            "location": ["Warehouse1", "Warehouse2"],
+            "price": [100, 200],
+        }
+    )
+
     write_to_sql_upsert(
         conn=postgres_conn,
         schema="sales_source",
@@ -59,7 +64,7 @@ def test_write_to_sql_upsert_composite_key(postgres_conn):
         df=composite_data,
         primary_keys=["id", "location"],
     )
-    
+
     result = pd.read_sql_query(
         sql="SELECT * FROM sales_source.sales_data_composite",
         con=postgres_conn,
@@ -67,12 +72,54 @@ def test_write_to_sql_upsert_composite_key(postgres_conn):
 
     assert len(result) == 2
 
+
+def test_write_to_sql_upsert_update_timestamp(postgres_conn):
+    test_data = pd.DataFrame(
+        {"id": [2], "item": ["Belt"], "price": [200]}
+    )
+    query_check = "SELECT modified_at FROM sales_source.update_ts_data"
+
+    # 2025-01-18 02:22:32.532
+    write_to_sql_upsert(
+        conn=postgres_conn,
+        schema="sales_source",
+        table="update_ts_data",
+        df=test_data,
+        primary_keys=["id"],
+        update_timestamp_field="modified_at",
+    )
+
+    # Query the table to check the result
+    first_result = pd.read_sql_query(
+        sql=query_check,
+        con=postgres_conn,
+    )["modified_at"][0].to_pydatetime()
+
+    # Modify the shipping data to test upsert (update existing row)
+    updated_shipping_data = test_data.copy()
+    updated_shipping_data["price"] = 250
+
+    write_to_sql_upsert(
+        conn=postgres_conn,
+        schema="sales_source",
+        table="update_ts_data",
+        df=updated_shipping_data,
+        primary_keys=["id"],
+        update_timestamp_field="modified_at",  # The timestamp field to be updated
+    )
+
+    second_result = pd.read_sql_query(
+        sql=query_check,
+        con=postgres_conn,
+    )["modified_at"][0].to_pydatetime()
+
+    assert second_result > first_result
+
+
 def test_write_to_sql_upsert_conflict_handling(postgres_conn, sales_data):
-    conflicting_data = pd.DataFrame({
-        "id": [2], 
-        "item": ["Updated Belt"], 
-        "price": [200]
-    })
+    conflicting_data = pd.DataFrame(
+        {"id": [2], "item": ["Updated Belt"], "price": [200]}
+    )
 
     write_to_sql_upsert(
         conn=postgres_conn,
@@ -89,6 +136,7 @@ def test_write_to_sql_upsert_conflict_handling(postgres_conn, sales_data):
 
     assert updated_record["item"][0] == "Updated Belt"
     assert updated_record["price"][0] == 200
+
 
 def test_write_to_sql_upsert_new_table(postgres_conn, sales_data):
     table_name = "sales_data_new"
@@ -129,7 +177,7 @@ def test_write_to_sql_upsert_fail_exception(postgres_conn):
         data={"id": [1, 2, 3], "my%col_is_screwedlol": ["team1", "team2", "team3"]}
     )
     table_name = "fake_data_pct"
-    
+
     with pytest.raises(ValueError):
         write_to_sql_upsert(
             conn=postgres_conn,

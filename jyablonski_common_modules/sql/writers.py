@@ -8,12 +8,14 @@ from sqlalchemy.engine.base import Connection
 # logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def write_to_sql_upsert(
     conn: Connection,
     table: str,
     schema: str,
     df: pd.DataFrame,
     primary_keys: list[str],
+    update_timestamp_field: str | None = None,
 ) -> None:
     """
     Upserts a Pandas DataFrame into a SQL Table.
@@ -32,6 +34,9 @@ def write_to_sql_upsert(
 
         primary_keys (list[str]): Column(s) representing the primary key.
 
+        update_timestamp_field (str | None): Optional column to specify
+            what timestamp field to update when a record is updated.
+
     Returns:
         None, but upserts the DataFrame into the SQL table.
 
@@ -49,23 +54,27 @@ def write_to_sql_upsert(
     if df.empty:
         logger.info(f"{table} is empty, skipping SQL upsert.")
         return
-    
+
     if not all(key in df.columns for key in primary_keys):
         raise ValueError("Not all Primary Key Columns are in the DataFrame")
 
     try:
         # Check if the table exists
         table_exists = conn.execute(
-            text(f"""SELECT EXISTS (
+            text(
+                f"""SELECT EXISTS (
                     SELECT FROM information_schema.tables
                     WHERE 
                         table_schema = '{schema}'
                         AND table_name = '{table}');
-                    """)
+                    """
+            )
         ).first()[0]
 
         if not table_exists:
-            df.to_sql(name=table, con=conn, schema=schema, if_exists='replace', index=False)
+            df.to_sql(
+                name=table, con=conn, schema=schema, if_exists="replace", index=False
+            )
             logger.info(f"Created new table {table} with {len(df)} records.")
 
         else:
@@ -74,15 +83,23 @@ def write_to_sql_upsert(
 
             primary_keys_sql = ", ".join([f'"{col}"' for col in primary_keys])
             headers_sql_txt = ", ".join([f'"{col}"' for col in df.columns.tolist()])
-            update_column_stmt = ", ".join([f'"{col}" = EXCLUDED."{col}"' for col in df.columns if col not in primary_keys])
-            
+            update_column_stmt = ", ".join(
+                [
+                    f'"{col}" = EXCLUDED."{col}"'
+                    for col in df.columns
+                    if col not in primary_keys and (col != update_timestamp_field)
+                ]
+            )
+
+            if update_timestamp_field:
+                update_column_stmt += f', "{update_timestamp_field}" = NOW()'
+
+
             upsert_query = f"""
-                -- Add a unique constraint if not exists
                 ALTER TABLE "{schema}"."{table}" 
                 DROP CONSTRAINT IF EXISTS unique_constraint_for_upsert_{table},
                 ADD CONSTRAINT unique_constraint_for_upsert_{table} UNIQUE ({primary_keys_sql});
 
-                -- Insert new data or update existing records
                 INSERT INTO "{schema}"."{table}" ({headers_sql_txt})
                 SELECT {headers_sql_txt} FROM "{schema}"."{temp_table_name}"
                 ON CONFLICT ({primary_keys_sql}) 
