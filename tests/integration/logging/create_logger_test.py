@@ -1,16 +1,38 @@
+import logging
 import os
 
 from jyablonski_common_modules.logging import create_logger
 
 
-def test_create_logger():
-    log_file_location = "example.log"
+def test_create_logger_with_log_file(caplog):
+    log_file_location = "test.log_fake"
+    log_msg = "This is a test log."
 
-    with open(log_file_location, "w") as fp:
-        fp.write(f"1")
+    # create logger with a log file
+    logger = create_logger(log_file=log_file_location)
 
-    logger = create_logger(log_file=log_file_location,)
-    logger.info(f"hi")
+    # verify that the log file exists
+    assert os.path.exists(log_file_location)
 
-    dir_list = os.listdir()
-    assert log_file_location in dir_list
+    # Ensure the logger writes to the console
+    with caplog.at_level(logging.INFO):
+        logger.info(log_msg)
+        assert log_msg in caplog.text
+
+    # clean up
+    os.remove(log_file_location)
+
+
+def test_create_logger_without_log_file(caplog):
+    # Test logger without log file
+    logger = create_logger()
+    log_msg = "Console log test."
+
+    # Ensure the logger writes to the console
+    with caplog.at_level(logging.INFO):
+        logger.info(log_msg)
+        assert log_msg in caplog.text
+
+    # Verify that no log file is created
+    log_files = [file for file in os.listdir() if file.endswith(".log")]
+    assert not log_files
