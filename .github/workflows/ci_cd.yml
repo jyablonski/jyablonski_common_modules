@@ -59,7 +59,7 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: '${{ github.event.pull_request.title }} Failed to deploy properly'
+          SLACK_MESSAGE: '${{ github.event.pull_request.title }} Failed to Deploy'
           SLACK_TITLE: Common Modules Deploy Pipeline Failure
           SLACK_USERNAME: GitHub Actions
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
