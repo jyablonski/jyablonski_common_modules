@@ -6,7 +6,7 @@ authors = ["jyablonski9 <jyablonski9@gmail.com>"]
 maintainers = ["jyablonski9 <jyablonski9@gmail.com>"]
 classifiers = [
     "Topic :: Software Development :: Build Tools",
-    "Topic :: Software Development :: Libraries :: Python Modules"
+    "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 keywords = ["personal", "helper functions"]
 readme = "README.md"
@@ -35,6 +35,8 @@ moto = "^5.0.20"
 black = "^24.10.0"
 
 # no clue how to pin these versions lmao, great documentation doods
+ruff = "^0.9.4"
+
 [tool.poetry.extras]
 es-logging = ["opensearch-logger"]
 all = ["opensearch-logger"]
