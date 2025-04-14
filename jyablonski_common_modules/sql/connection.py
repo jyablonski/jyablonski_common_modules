@@ -6,6 +6,7 @@ from sqlalchemy.engine.base import Engine
 
 logger = logging.getLogger(__name__)
 
+
 def create_sql_engine(
     schema: str,
     user: str = os.environ.get("RDS_USER", "postgres"),
@@ -59,8 +60,8 @@ def create_sql_engine(
             },
             echo=False,
         )
-        logger.info(f"SQL Engine for {db_url} created")
+        logger.info("SQL Engine created")
         return engine
     except exc.SQLAlchemyError as e:
-        logger.error(f"SQL Engine for {db_url} failed, {e}")
+        logger.error(f"SQL Engine failed, {e}")
         raise e

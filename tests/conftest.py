@@ -10,7 +10,7 @@ from jyablonski_common_modules.general import get_feature_flags
 from jyablonski_common_modules.sql import create_sql_engine
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="function", autouse=True)
 def aws_credentials():
     """Mocked AWS Credentials for moto."""
     os.environ["AWS_ACCESS_KEY_ID"] = "testing"
@@ -18,7 +18,7 @@ def aws_credentials():
     os.environ["AWS_SECURITY_TOKEN"] = "testing"
     os.environ["AWS_SESSION_TOKEN"] = "testing"
     os.environ["USER_EMAIL"] = "jyablonski9@gmail.com"
-    os.environ["SQLALCHEMY_SILENCE_UBER_WARNING"] = 1
+    os.environ["SQLALCHEMY_SILENCE_UBER_WARNING"] = "1"
     # ^ some dumbass mf shit lmfao
 
 
@@ -37,11 +37,13 @@ def postgres_conn():
     connection.execution_options(isolation_level="AUTOCOMMIT")
     yield connection
 
+
 # i think this is needed to initialize the logging statements & test they're working as intended
 @pytest.fixture(scope="session", autouse=True)
 def configure_logging():
     logging.basicConfig(level=logging.INFO)
     yield
+
 
 @pytest.fixture(scope="session")
 def sales_data():

@@ -7,6 +7,7 @@ from jyablonski_common_modules.aws import (
 )
 from jyablonski_common_modules.general import (
     check_feature_flag,
+    construct_date_partition,
     get_leading_zeroes,
     get_feature_flags,
 )
@@ -25,6 +26,7 @@ from jyablonski_common_modules.sql import create_sql_engine, write_to_sql_upsert
         (get_ssm_parameter, "get_ssm_parameter"),
         (check_s3_file_exists, "check_s3_file_exists"),
         (check_feature_flag, "check_feature_flag"),
+        (construct_date_partition, "construct_date_partition"),
         (get_leading_zeroes, "get_leading_zeroes"),
         (get_feature_flags, "get_feature_flags"),
         (create_logger, "create_logger"),
