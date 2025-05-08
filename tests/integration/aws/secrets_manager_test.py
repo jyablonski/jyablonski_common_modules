@@ -1,3 +1,5 @@
+import json
+
 import boto3
 from moto import mock_aws
 import pytest
@@ -9,9 +11,10 @@ from jyablonski_common_modules.aws import get_secret_value
 def test_get_secret_value_success():
     client = boto3.client("secretsmanager", region_name="us-east-1")
     secret_name = "bababooyee"
-    secret_value = "mama mia"
+    secret_value = {"username": "bob", "password": "hunter2"}
+    secret_value_str = json.dumps(secret_value)
 
-    client.create_secret(Name=secret_name, SecretString=secret_value)
+    client.create_secret(Name=secret_name, SecretString=secret_value_str)
 
     result = get_secret_value(client=client, secret=secret_name)
 
@@ -28,5 +31,7 @@ def test_get_secret_value_fail():
 
     client.create_secret(Name=secret_name, SecretString=secret_value)
 
-    with pytest.raises(TypeError):
-        secret = get_secret_value(client=client, secret=fake_secret_name)
+    ResourceNotFoundException = client.exceptions.ResourceNotFoundException
+
+    with pytest.raises(ResourceNotFoundException):
+        get_secret_value(client=client, secret=fake_secret_name)

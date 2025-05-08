@@ -1,7 +1,11 @@
-import botocore
+from typing import Any
+
+import json
+
+from botocore.client import BaseClient
 
 
-def get_secret_value(client: botocore.client, secret: str) -> str:
+def get_secret_value(client: BaseClient, secret: str) -> dict[str, Any]:
     """
     Function to grab a Secret from AWS Secrets Manager
 
@@ -14,8 +18,7 @@ def get_secret_value(client: botocore.client, secret: str) -> str:
         The Requested Secret Value
     """
     try:
-        creds = client.get_secret_value(SecretId=secret)["SecretString"]
-
-        return creds
-    except BaseException as e:
-        raise e(f"Error Occurred while grabbing secret {secret}, {e}")
+        secret = json.loads(client.get_secret_value(SecretId=secret)["SecretString"])
+        return secret
+    except Exception:
+        raise
