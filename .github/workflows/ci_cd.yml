@@ -10,6 +10,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  UV_VERSION: "0.7.13"
 
 jobs:
   ci_pipeline:
@@ -19,47 +20,39 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run tests
-        run: |
-          make test
+        run: make test
 
   cd_pipeline:
     runs-on: ubuntu-latest
     needs: ci_pipeline
     if: github.event_name == 'push' && github.ref == 'refs/heads/master' && success()
     steps:
-      - name: Check out code
+      - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Build and publish to PyPI
-        uses: JRubics/poetry-publish@v2.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
         with:
-          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
 
-  deploy-alert-success:
+      - name: Build Package
+        run: uv build --no-cache
+
+      - name: Publish Package to PyPI
+        run: uv publish --token ${{ secrets.PYPI_TOKEN }}
+
+  deploy-alert:
     needs: cd_pipeline
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: '${{ github.event.pull_request.title }} Deployed to Production'
-          SLACK_TITLE: Common Modules Deploy Pipeline Success
-          SLACK_USERNAME: GitHub Actions
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  deploy-alert-failure:
-    needs: cd_pipeline
-    runs-on: ubuntu-latest
-    if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/master'
-    steps:
-      - uses: actions/checkout@v4
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: '${{ github.event.pull_request.title }} Failed to Deploy'
-          SLACK_TITLE: Common Modules Deploy Pipeline Failure
-          SLACK_USERNAME: GitHub Actions
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Slack Deploy Notification
+        uses: jyablonski/actions/slack_alert@v1
+        with:
+          message: ${{ job.status == 'success' && 'Common Modules Deployed to Production' || 'Common Modules Failed to deploy properly' }}
+          title: ${{ job.status == 'success' && 'Common Modules Deploy Pipeline' || 'Common Modules Deploy Failure' }}
+          color: ${{ job.status == 'success' && 'good' || 'danger' }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
