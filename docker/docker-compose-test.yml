@@ -16,8 +16,9 @@ services:
   common_modules_test_runner:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.test
-    image: jyablonski_common_modules
+      dockerfile: docker/Dockerfile
+      args:
+        INSTALL_DEV_DEPENDENCIES: "true"
     environment:
       - ENV_TYPE=docker_dev
     depends_on:
