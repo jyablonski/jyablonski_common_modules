@@ -2,7 +2,7 @@
 
 ![Tests](https://github.com/jyablonski/jyablonski_common_modules/actions/workflows/ci_cd.yml/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/jyablonski/jyablonski_common_modules/badge.svg?branch=master)](https://coveralls.io/github/jyablonski/jyablonski_common_modules?branch=master)
 
-Version: 0.0.10
+Version: 0.0.11
 
 Utility Repo w/ functions and tools for data engineering, cloud infrastructure, and development workflows. Includes helpers for:
 

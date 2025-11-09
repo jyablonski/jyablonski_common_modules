@@ -1,6 +1,6 @@
 [project]
 name = "jyablonski_common_modules"
-version = "0.0.10"
+version = "0.0.11"
 description = ""
 authors = [{ name = "jyablonski9", email = "jyablonski9@gmail.com" }]
 requires-python = ">=3.12, <3.13"
