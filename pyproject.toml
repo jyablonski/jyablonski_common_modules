@@ -1,30 +1,28 @@
 [project]
 name = "jyablonski_common_modules"
-version = "0.0.10"
+version = "0.0.11"
 description = ""
 authors = [{ name = "jyablonski9", email = "jyablonski9@gmail.com" }]
 requires-python = ">=3.12, <3.13"
 readme = "README.md"
 maintainers = [{ name = "jyablonski9", email = "jyablonski9@gmail.com" }]
-keywords = [
-    "personal",
-    "helper functions",
-]
+keywords = ["personal", "helper functions"]
 classifiers = [
     "Topic :: Software Development :: Build Tools",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "pandas>=2.2.3,<3",
     "SQLAlchemy>=2.0.36,<3",
     "psycopg2-binary>=2.9.10,<3",
     "boto3>=1.35.57,<2",
     "requests>=2.32.3,<3",
+    "pandas>=2.2.3,<3",
 ]
 
 [project.optional-dependencies]
 es-logging = ["opensearch-logger>=1.3.0"]
-all = ["opensearch-logger>=1.3.0"]
+parquet = ["awswrangler>=3.0.0,<4"]
+all = ["opensearch-logger>=1.3.0", "awswrangler>=3.0.0,<4"]
 
 [dependency-groups]
 test = [
@@ -42,10 +40,7 @@ local = [
 ]
 
 [tool.uv]
-default-groups = [
-    "test",
-    "local",
-]
+default-groups = ["test", "local"]
 
 [tool.hatch.build.targets.sdist]
 exclude = ["docker/"]
