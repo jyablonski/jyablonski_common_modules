@@ -10,7 +10,7 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  UV_VERSION: "0.7.13"
+  UV_VERSION: "0.9.8"
 
 jobs:
   ci_pipeline:
