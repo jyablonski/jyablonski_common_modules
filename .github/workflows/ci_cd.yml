@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Run tests
         run: make test
@@ -28,7 +28,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master' && success()
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -42,17 +42,14 @@ jobs:
       - name: Publish Package to PyPI
         run: uv publish --token ${{ secrets.PYPI_TOKEN }}
 
-  deploy-alert:
-    needs: cd_pipeline
+  notify:
+    needs: [ci_pipeline, cd_pipeline]
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Slack Deploy Notification
-        uses: jyablonski/actions/slack_alert@v1
+      - name: Slack Alert
+        uses: jyablonski/actions/alert@v1
         with:
-          message: ${{ job.status == 'success' && 'Common Modules Deployed to Production' || 'Common Modules Failed to deploy properly' }}
-          title: ${{ job.status == 'success' && 'Common Modules Deploy Pipeline' || 'Common Modules Deploy Failure' }}
-          color: ${{ job.status == 'success' && 'good' || 'danger' }}
+          status: ${{ contains(needs.*.result, 'failure') && 'failure' || 'success' }}
           webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          custom_message: "Common Modules Package"
